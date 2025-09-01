@@ -74,6 +74,7 @@ sim_%_src:
 	@vvp -l vvp_sim.log $(BUILD)/$*_tb
 	@echo -e "\nSimulation complete!\n"
 	@echo -e "\nOpening waveforms...\n"
+	@python3 plot.py waves/pid.vcd pid_tb.pos[31:0]
 	@if [ -f waves/$*.gtkw ]; then \
 		gtkwave waves/$*.gtkw; \
 	else \

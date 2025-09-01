@@ -37,7 +37,7 @@ module pid_tb;
     clk = ~clk;
   end
   add32 add0 (
-    .num1(position), .num2({PID_out[31], PID_out[30:0] >> 5}),
+    .num1(position), .num2({PID_out[31], PID_out[30:0] >> 8}),
     .sum(position_new), .overflow()
   );
   add32 add1 (
@@ -52,10 +52,10 @@ module pid_tb;
     nrst = 0;
     start_calc = 0;
     en = 1;
-    Kp = 10; Ki = 1; Kd = 1;
+    Kp = 1; Ki = 1; Kd = 15;
     delta_t = 1;
     position = 5000;
-    setpoint = {1'b1, 31'd900000};
+    setpoint = {1'b1, 31'd9000};
     #1
     error = error_new;
     
