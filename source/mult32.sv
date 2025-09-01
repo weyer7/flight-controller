@@ -64,17 +64,17 @@ module mult32 (
     case (state_q)
       IDLE: begin
         if (start) begin
-          state_d = START;
+          s1_d     = num1[31];
+          s2_d     = num2[31];
+          a_d      = num1[30:0];
+          b_d      = num2[30:0];
+          result_d = 0;
+          step_d   = 0;
+          state_d = RUN;
         end
       end
       START: begin
-        s1_d     = num1[31];
-        s2_d     = num2[31];
-        a_d      = num1[30:0];
-        b_d      = num2[30:0];
-        result_d = 0;
-        step_d   = 0;
-        state_d = RUN;
+      
       end
       RUN: begin
         if (step_q < 31) begin

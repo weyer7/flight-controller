@@ -5,6 +5,7 @@ module pid (
   input logic start_calc, //begin single frame PID calculation
   input logic [31:0] delta_t, //time between current and previous start signal
   output logic [31:0] PID_out, //control output
+    p, i, d,
   output logic done //PID calculation done
 );
   logic [31:0] proportional, integral, derivative, //P,I,D results
@@ -14,6 +15,10 @@ module pid (
     div_done_d, acc_done, delayed_pid_done; //intermediate done signals
   logic [31:0] error_last; //last error value
   logic [1:0]delayed_start; //single clock speed behind start
+
+  assign p = proportional;
+  assign i = integral;
+  assign d = derivative;
 
   always_ff @(posedge clk, nrst) begin
     if (~nrst) begin
@@ -26,7 +31,7 @@ module pid (
   //proportional (P)
   mult32 mult0 (
     .clk(clk), .en(en), .nrst(nrst),
-    .num1(Kp), .num2(error),
+    .num1(Kp), .num2({error[31], error[30:0] >> 4}),
     .start(start_calc), .done(done_p), .overflow(overflow_p), .product(proportional)
   );
 
@@ -37,7 +42,7 @@ module pid (
   // );
   acc32 acc0 (
     .clk(clk), .en(en), .nrst(nrst),
-    .in(error), .accumulate(start_calc),
+    .in({error[31], error[30:0] >> 6}), .accumulate(start_calc),
     .out(acc_out), .overflow()
   );
   mult32 mult1(
@@ -55,29 +60,29 @@ module pid (
     end
   end
   add32 add1(
-    .num1(error), .num2({error_last[31], error_last[30:0]}), //current-last
+    .num1(error), .num2({!error_last[31], error_last[30:0]}), //current - last
     .sum(rate), .overflow()
   );
-  div32 div0 (
-    .clk(clk), .en(en), .nrst(nrst), 
-    .start(start_calc),
-    .dividend(rate), .divisor(delta_t),
-    .quotient(quotient_d), .remainder(), .done(div_done_d)
-  );
+  // div32 div0 (
+  //   .clk(clk), .en(en), .nrst(nrst), 
+  //   .start(start_calc),
+  //   .dividend(rate), .divisor(delta_t),
+  //   .quotient(quotient_d), .remainder(), .done(div_done_d)
+  // );
   mult32 mult2 (
     .clk(clk), .en(en), .nrst(nrst),
-    .num1(Kd), .num2(quotient_d),
-    .start(div_done_d), .done(done_d), .overflow(overflow_d), .product(derivative)
+    .num1(Kd), .num2(rate), //quotient_d
+    .start(start_calc), .done(done_d), .overflow(overflow_d), .product(derivative) //done_div_d
   );
 
   //Adding together
 
   add32 add2 (
-    .num1(proportional), .num2(integral),
+    .num1({proportional[31], proportional[30:0] << 4}), .num2(integral),
     .sum(sum1), .overflow()
   );
   add32 add3 (
-    .num1(sum1), .num2(derivative),
+    .num1(sum1), .num2({derivative[31], derivative[30:0] << 4}),
     .sum(sum2), .overflow()
   );
   //pipeline reg

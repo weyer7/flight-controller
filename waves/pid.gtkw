@@ -1,18 +1,18 @@
 [*]
-[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Mon Sep  1 04:01:50 2025
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Mon Sep  1 07:27:27 2025
 [*]
-[dumpfile] "/home/shay/a/weyer7/System_Verilog/flight_controller/lab-project-template/waves/pid.vcd"
-[dumpfile_mtime] "Mon Sep  1 04:01:29 2025"
-[dumpfile_size] 6014011
-[savefile] "/home/shay/a/weyer7/System_Verilog/flight_controller/lab-project-template/waves/pid.gtkw"
+[dumpfile] "/home/aweyer26/SystemVerilog/flight-controller/waves/pid.vcd"
+[dumpfile_mtime] "Mon Sep  1 07:23:35 2025"
+[dumpfile_size] 5196607
+[savefile] "/home/aweyer26/SystemVerilog/flight-controller/waves/pid.gtkw"
 [timestart] 0
 [size] 1293 960
-[pos] 1349 176
-*-27.918406 206000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] 708 209
+*-27.918406 451000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] pid_tb.
 [treeopen] pid_tb.dut.
-[sst_width] 214
+[sst_width] 276
 [signals_width] 174
 [sst_expanded] 1
 [sst_vpaned_height] 282
@@ -30,6 +30,7 @@ pid_tb.delta_t[31:0]
 pid_tb.en
 @22
 pid_tb.error[31:0]
+pid_tb.dut.error_last[31:0]
 @28
 pid_tb.nrst
 pid_tb.start_calc
@@ -81,7 +82,7 @@ pid_tb.dut.mult1.overflow
 @28
 pid_tb.dut.add1.num1[31:0]
 pid_tb.dut.add1.num2[31:0]
-@24
+@25
 pid_tb.dut.add1.sum[31:0]
 @28
 pid_tb.dut.add1.overflow

@@ -19,7 +19,7 @@
 module pid_tb;
   logic clk, en, nrst;
   logic start_calc;
-  logic [31:0] error, Kp, Ki, Kd, delta_t, PID_out;
+  logic [31:0] error, Kp, Ki, Kd, delta_t, PID_out, proportional, integral, derivative;
   logic done;
 
   logic [31:0] setpoint, position, position_new, error_new, p, i, d;
@@ -28,6 +28,9 @@ module pid_tb;
   assign err = signmag_to_twos(error);
   assign sp = signmag_to_twos(setpoint);
   assign pos = signmag_to_twos(position);
+  assign proportional = signmag_to_twos(p);
+  assign integral = signmag_to_twos(i);
+  assign derivative = signmag_to_twos(d);
   pid dut (
     .*
   );
@@ -52,10 +55,10 @@ module pid_tb;
     nrst = 0;
     start_calc = 0;
     en = 1;
-    Kp = 1; Ki = 1; Kd = 15;
+    Kp = 10; Ki = 1; Kd = 1;
     delta_t = 1;
     position = 5000;
-    setpoint = {1'b1, 31'd9000};
+    setpoint = 5000;
     #1
     error = error_new;
     
@@ -67,7 +70,28 @@ module pid_tb;
     @(negedge clk);
     start_calc = 0;
     @(posedge done);
-    for (int i = 0; i < 500; i ++) begin
+    //===========================
+    //TEST CASE 1: POSITIVE DRIFT
+    //===========================
+    for (int i = 0; i < 1000; i ++) begin
+      @(negedge clk);
+      start_calc = 1;
+      @(negedge clk);
+      start_calc = 0;
+      @(posedge done);
+      position = position_new;
+      error = error_new;
+      // if (i % 200 == 0) begin
+      //   // setpoint = setpoint + 9000 * (i % 7);
+      //   setpoint = 1000000;
+      // end
+      setpoint = setpoint + 2000; //add drift to test integral
+    end
+    //==========================================
+    //TEST CASE 2: SUDDEN POSITIVE SETPOINT JUMP
+    //==========================================
+    setpoint = 0;
+    for (int i = 0; i < 2000; i ++) begin
       @(negedge clk);
       start_calc = 1;
       @(negedge clk);
@@ -76,6 +100,24 @@ module pid_tb;
       position = position_new;
       error = error_new;
     end
+    //=========================
+    //TEST CASE 3: MID-OP RESET
+    //=========================
+    nrst = 0;
+    #1;
+    nrst = 1;
+    @(negedge clk);
+    setpoint = {1'b0, 31'd700000};
+    for (int i = 0; i < 1000; i ++) begin
+      @(negedge clk);
+      start_calc = 1;
+      @(negedge clk);
+      start_calc = 0;
+      @(posedge done);
+      position = position_new;
+      error = error_new;
+    end
+    setpoint = 700001;
     #500;
     // finish the simulation
     $finish;
