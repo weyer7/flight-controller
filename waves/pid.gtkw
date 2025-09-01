@@ -1,0 +1,110 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Mon Sep  1 04:01:50 2025
+[*]
+[dumpfile] "/home/shay/a/weyer7/System_Verilog/flight_controller/lab-project-template/waves/pid.vcd"
+[dumpfile_mtime] "Mon Sep  1 04:01:29 2025"
+[dumpfile_size] 6014011
+[savefile] "/home/shay/a/weyer7/System_Verilog/flight_controller/lab-project-template/waves/pid.gtkw"
+[timestart] 0
+[size] 1293 960
+[pos] 1349 176
+*-27.918406 206000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] pid_tb.
+[treeopen] pid_tb.dut.
+[sst_width] 214
+[signals_width] 174
+[sst_expanded] 1
+[sst_vpaned_height] 282
+@22
+pid_tb.Kd[31:0]
+pid_tb.Ki[31:0]
+pid_tb.Kp[31:0]
+@24
+pid_tb.PID_out[31:0]
+@28
+pid_tb.clk
+@22
+pid_tb.delta_t[31:0]
+@28
+pid_tb.en
+@22
+pid_tb.error[31:0]
+@28
+pid_tb.nrst
+pid_tb.start_calc
+@24
+pid_tb.dut.proportional[31:0]
+pid_tb.dut.integral[31:0]
+pid_tb.dut.derivative[31:0]
+pid_tb.position[31:0]
+@420
+pid_tb.pos[31:0]
+@24
+pid_tb.setpoint[31:0]
+@28
+pid_tb.done
+@200
+-mult_p
+@28
+pid_tb.dut.mult0.start
+pid_tb.dut.mult0.done
+@24
+pid_tb.dut.mult0.num1[31:0]
+pid_tb.dut.mult0.num2[31:0]
+pid_tb.dut.mult0.product[31:0]
+@28
+pid_tb.dut.mult0.overflow
+@200
+-add_i
+-acc_i
+@28
+pid_tb.dut.acc0.accumulate
+@24
+pid_tb.dut.acc0.in[31:0]
+pid_tb.dut.acc0.out[31:0]
+@28
+pid_tb.dut.acc0.overflow
+@200
+-mult_i
+@28
+pid_tb.dut.mult1.start
+pid_tb.dut.mult1.done
+@24
+pid_tb.dut.mult1.num1[31:0]
+pid_tb.dut.mult1.num2[31:0]
+pid_tb.dut.mult1.product[31:0]
+@28
+pid_tb.dut.mult1.overflow
+@200
+-add_d
+@28
+pid_tb.dut.add1.num1[31:0]
+pid_tb.dut.add1.num2[31:0]
+@24
+pid_tb.dut.add1.sum[31:0]
+@28
+pid_tb.dut.add1.overflow
+@200
+-divide_d
+@28
+pid_tb.dut.div0.start
+pid_tb.dut.div0.done
+@24
+pid_tb.dut.div0.dividend[31:0]
+pid_tb.dut.div0.divisor[31:0]
+pid_tb.dut.div0.quotient[31:0]
+pid_tb.dut.div0.remainder[31:0]
+@200
+-mult_d
+@28
+pid_tb.dut.mult2.start
+pid_tb.dut.mult2.done
+@24
+pid_tb.dut.mult2.num1[31:0]
+pid_tb.dut.mult2.num2[31:0]
+pid_tb.dut.mult2.product[31:0]
+@28
+pid_tb.dut.mult2.overflow
+[pattern_trace] 1
+[pattern_trace] 0

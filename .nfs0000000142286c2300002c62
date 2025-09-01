@@ -1,0 +1,2 @@
+VCD info: dumpfile waves/pid.vcd opened for output.
+testbench/pid_tb.sv:54: $finish called at 51200000 (10ns)
