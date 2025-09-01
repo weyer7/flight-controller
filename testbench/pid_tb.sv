@@ -52,10 +52,10 @@ module pid_tb;
     nrst = 0;
     start_calc = 0;
     en = 1;
-    Kp = 1; Ki = 1; Kd = 3;
+    Kp = 10; Ki = 1; Kd = 1;
     delta_t = 1;
     position = 5000;
-    setpoint = 10000;
+    setpoint = {1'b1, 31'd900000};
     #1
     error = error_new;
     
