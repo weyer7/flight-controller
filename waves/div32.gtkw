@@ -1,0 +1,58 @@
+[*]
+[*] GTKWave Analyzer v3.3.116 (w)1999-2023 BSI
+[*] Tue Sep  2 01:09:38 2025
+[*]
+[dumpfile] "/home/aweyer26/SystemVerilog/flight-controller/waves/div32.vcd"
+[dumpfile_mtime] "Tue Sep  2 01:04:31 2025"
+[dumpfile_size] 8346
+[savefile] "/home/aweyer26/SystemVerilog/flight-controller/waves/div32.gtkw"
+[timestart] 0
+[size] 2020 1101
+[pos] -527 56
+*-35.477421 115500000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] div32_tb.
+[sst_width] 276
+[signals_width] 190
+[sst_expanded] 1
+[sst_vpaned_height] 332
+@24
+div32_tb.clk
+div32_tb.dividend[31:0]
+div32_tb.divisor[31:0]
+div32_tb.done
+div32_tb.en
+div32_tb.nrst
+div32_tb.quotient[31:0]
+div32_tb.remainder[31:0]
+div32_tb.start
+div32_tb.dut.F
+div32_tb.dut.a[30:0]
+div32_tb.dut.a_next[30:0]
+div32_tb.dut.amm[30:0]
+div32_tb.dut.apm[30:0]
+div32_tb.dut.clk
+div32_tb.dut.count[4:0]
+div32_tb.dut.count_next[4:0]
+div32_tb.dut.dividend[31:0]
+div32_tb.dut.divisor[31:0]
+div32_tb.dut.divisor_d[31:0]
+div32_tb.dut.divisor_q[31:0]
+div32_tb.dut.done
+div32_tb.dut.en
+div32_tb.dut.nrst
+div32_tb.dut.q0F
+div32_tb.dut.q0T
+div32_tb.dut.q[30:0]
+div32_tb.dut.q_next[30:0]
+div32_tb.dut.quotient[31:0]
+@25
+div32_tb.dut.quotient_next[31:0]
+@24
+div32_tb.dut.remainder[31:0]
+div32_tb.dut.remainder_next[31:0]
+div32_tb.dut.shift[30:0]
+div32_tb.dut.start
+div32_tb.dut.state[1:0]
+div32_tb.dut.state_next[1:0]
+[pattern_trace] 1
+[pattern_trace] 0

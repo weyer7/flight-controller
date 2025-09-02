@@ -1,6 +1,8 @@
 `default_nettype none
 
-module div32 (
+module div32 #(
+  parameter int F = 0 //fractional bits
+)(
   input logic clk, nrst, en, start,
   input logic [31:0] dividend, divisor, //signed 32-bit integer
   output logic [31:0] quotient, remainder, //signed 32-bit integer
@@ -21,6 +23,7 @@ module div32 (
   logic q0T, q0F;
   logic [30:0] shift;
   logic [31:0] remainder_next;
+  logic [31:0] divisor_d, divisor_q, dividend_d, dividend_q;
 
   typedef enum logic [1:0] {
     IDLE = 2'b0,
@@ -42,11 +45,15 @@ module div32 (
     q0T = 1'b0;
     q0F = 1'b0;
     shift = 31'b0;
+    dividend_d = dividend_q;
+    divisor_d = divisor_q;
     case (state)
       IDLE: begin
         if (start) begin
           state_next = START;
-          q_next = dividend[30:0];
+          q_next = dividend[30:0] << F;
+          dividend_d = dividend[30:0] << F;
+          divisor_d = divisor;
           a_next = 31'b0;
         end else begin
           state_next = IDLE;
@@ -66,8 +73,8 @@ module div32 (
         end else begin
           state_next = RUN;
           shift = {a[29:0], q[30]};
-          apm = shift + divisor[30:0];
-          amm = shift + $signed(~divisor[30:0] + 1'b1);
+          apm = shift + divisor_q[30:0];
+          amm = shift + $signed(~divisor_q[30:0] + 1'b1);
 
           // apm = {a[29:0], q[30]} + ({divisor[30:0]});
           // amm = {a[29:0], q[30]} + (~divisor[30:0] + 1'b1);
@@ -85,7 +92,7 @@ module div32 (
       end
       DONE: begin
         if ($signed(a) < 0) begin
-          remainder_next = {1'b0, a + divisor[30:0]};
+          remainder_next = {1'b0, a + divisor_q[30:0]};
         end else begin
           remainder_next = {1'b0, a};
         end
@@ -94,7 +101,7 @@ module div32 (
         state_next = IDLE;
         done = 1'b1;
         count_next = 5'b0;
-        quotient_next = {divisor[31]^dividend[31], q};
+        quotient_next = {divisor_q[31]^dividend_q[31], q};
       end
     endcase
   end
@@ -107,7 +114,9 @@ module div32 (
       count <= 0;
       state <= 0;
       quotient <= 0;
+      divisor_q <= '0;
       remainder <= 0;
+      dividend_q <= '0;
     end else if (en) begin
       //begin normal function
       a <= a_next;
@@ -115,14 +124,9 @@ module div32 (
       count <= count_next;
       state <= state_next;
       quotient <= quotient_next;
+      divisor_q <= divisor_d;
       remainder <= remainder_next;
-    end else begin
-      a <= a;
-      q <= q;
-      count <= count;
-      state <= state;
-      quotient <= quotient;
-      remainder <= remainder;
+      dividend_q <= dividend_d;
     end
   end
 endmodule

@@ -117,6 +117,9 @@ module pid_tb;
       position = position_new;
       error = error_new;
     end
+    //==========================
+    //TEST CASE 4: UNDERACTUATED
+    //==========================
     setpoint = 700001;
     #500;
     // finish the simulation

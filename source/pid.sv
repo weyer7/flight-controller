@@ -20,7 +20,7 @@ module pid (
   assign i = integral;
   assign d = derivative;
 
-  always_ff @(posedge clk, nrst) begin
+  always_ff @(posedge clk, negedge nrst) begin
     if (~nrst) begin
       delayed_start <= '0;
     end else if (en) begin
@@ -101,7 +101,7 @@ module pid (
       delayed_pid_done <= &fin_q;
     end
   end
-  always_comb begin
+  always @(*) begin
     sum1_d = sum1_q;
     sum2_d = sum2_q;
     done = 0;

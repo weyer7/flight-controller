@@ -1,98 +1,105 @@
 `default_nettype none
 
-module mult32 (
-  input  logic [31:0] num1, num2, //signed 32-bit integer
-  input  logic        clk, en, nrst, start,
-  output logic [31:0] product, //signed 32-bit integer
-  output logic        done, overflow
-
+module mult32 #(
+  parameter int N_IN = 32,   //input bit width
+  parameter int N_OUT = 32,  //output bit width
+  parameter int F = 0     //number of fractional bits (Q-format)
+)(
+  input  logic              clk, en, nrst, start,
+  input  logic [N_IN-1:0]      num1, num2, // sign-magnitude
+  output logic [N_OUT-1:0]    product,    // sign-magnitude
+  output logic              done, overflow
 );
 
-  logic [30:0] a_d, a_q, b_d, b_q;           //register versions of inputs
-  logic [63:0] result_d, result_q;         //64-bit result accumulator
-  logic [4:0] step_d, step_q;            //iteration step counter
-  logic s1_d, s1_q, s2_d, s2_q;                //sign of each number
-  logic [31:0] product_d, product_q;
-  logic [1:0] state_d, state_q;
-  logic overflow_d, overflow_q;
-  assign overflow = overflow_q;
-  assign product = product_d;
+  //split into sign and magnitude
+  logic              s1_d, s1_q, s2_d, s2_q;
+  logic [N_IN-2:0]      a_d, a_q, b_d, b_q;
+  logic [N_OUT-3:0]    result_d, result_q;
 
+  logic [$clog2(N_IN):0] step_d, step_q;
+
+  logic [N_OUT-1:0]    product_d, product_q;
+  logic              overflow_d, overflow_q;
+  logic [1:0]        state_d, state_q;
+
+  logic [N_OUT-2:0] scaled;
+
+  assign product  = product_q;
+  assign overflow = overflow_q;
 
   typedef enum logic [1:0] {
-    IDLE = 2'b0,
-    START = 2'd1,
-    RUN = 2'd2,
-    DONE = 2'd3
+    IDLE  = 2'b00,
+    RUN   = 2'b01
   } state_t;
 
+  //sequential state register
   always_ff @(posedge clk, negedge nrst) begin
     if (~nrst) begin
-      state_q <= IDLE;
-      result_q <= '0;
-      step_q <= '0;
-      product_q <= '0;
+      state_q    <= IDLE;
+      result_q   <= '0;
+      step_q     <= '0;
+      product_q  <= '0;
       overflow_q <= '0;
       s1_q <= '0;
       s2_q <= '0;
-      a_q <= '0;
-      b_q <= '0;
+      a_q  <= '0;
+      b_q  <= '0;
     end else if (en) begin
-      state_q <= state_d;
-      result_q <= result_d;
-      step_q <= step_d;
-      product_q <= product_d;
+      state_q    <= state_d;
+      result_q   <= result_d;
+      step_q     <= step_d;
+      product_q  <= product_d;
       overflow_q <= overflow_d;
       s1_q <= s1_d;
       s2_q <= s2_d;
-      a_q <= a_d;
-      b_q <= b_d;
+      a_q  <= a_d;
+      b_q  <= b_d;
     end
   end
 
+  //combinational datapath
   always @(*) begin
-    state_d = state_q;
-    result_d = result_q;
-    step_d = step_q;
-    done = 0;
-    product_d = product_q;
+    state_d    = state_q;
+    result_d   = result_q;
+    step_d     = step_q;
+    product_d  = product_q;
     overflow_d = overflow_q;
-    s1_d = s1_q;
-    s2_d = s2_q;
-    a_d = a_q;
-    b_d = b_q;
+    s1_d       = s1_q;
+    s2_d       = s2_q;
+    a_d        = a_q;
+    b_d        = b_q;
+    done       = 0;
+
     case (state_q)
       IDLE: begin
         if (start) begin
-          s1_d     = num1[31];
-          s2_d     = num2[31];
-          a_d      = num1[30:0];
-          b_d      = num2[30:0];
-          result_d = 0;
-          step_d   = 0;
-          state_d = RUN;
+          s1_d     = num1[N_IN-1];
+          s2_d     = num2[N_IN-1];
+          a_d      = num1[N_IN-2:0];
+          b_d      = num2[N_IN-2:0];
+          result_d = '0;
+          step_d   = '0;
+          state_d  = RUN;
         end
       end
-      START: begin
-      
-      end
+
       RUN: begin
-        if (step_q < 31) begin
+        if (step_q < N_IN-1) begin
           if (b_q[step_q]) begin
-            result_d = result_q + ({33'b0,a_q} << step_q);
+            result_d = result_q + ({{(N_IN-1){1'b0}}, a_q } << step_q);
           end
           step_d = step_q + 1;
         end else begin
-          done = 1;
-          product_d = {s1_q^s2_q, result_q[30:0]};
-          overflow_d = |result_q[63:32];
-          state_d = IDLE;
+          //fixed-point scaling: raw product has 2F fractional bits, rescale
+          scaled = result_q >> F; // truncate to F fractional bits
+
+          product_d  = {s1_q ^ s2_q, scaled[N_OUT-2:0]};
+          overflow_d = |scaled[N_OUT-2 -: (N_IN-1)];
+          done       = 1;
+          state_d    = IDLE;
         end
       end
-      DONE: begin
-
-      end
     endcase
-    // done = 1;
   end
+
 endmodule
